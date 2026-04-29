@@ -8,7 +8,7 @@ const User = require('../models/User');
 const auth = require('../middlewares/auth.middleware');
 
 
-// 🔥 REGISTRO
+// REGISTRO
 router.post('/registro', async (req, res) => {
   const { email, password } = req.body;
 
@@ -24,19 +24,19 @@ router.post('/registro', async (req, res) => {
 
   await newUser.save();
 
-  res.send('Usuario registrado 🔥');
+  res.send('Usuario registrado ');
 });
 
 
-// 🔐 LOGIN
+// LOGIN1
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) return res.send('Usuario no existe ❌');
+  if (!user) return res.send('X Usuario no existe X');
 
   const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) return res.send('Password incorrecto ❌');
+  if (!validPassword) return res.send('X Password incorrecto X');
 
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: '1h'
@@ -46,9 +46,9 @@ router.post('/login', async (req, res) => {
 });
 
 
-// 🔒 RUTA PROTEGIDA
+// RUTA PROTEGIDA
 router.get('/perfil', auth, (req, res) => {
-  res.send('Bienvenido a tu perfil 🔐');
+  res.send('Bienvenido a tu perfil');
 });
 
 
