@@ -108,7 +108,7 @@ Respuesta:
 
 ```
 {
-  "token": "JWT_TOKEN"
+  "token": "Pega aquí el token obtenido del login"
 }
 ```
 
