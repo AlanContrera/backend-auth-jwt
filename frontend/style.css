@@ -1,16 +1,84 @@
-body {
-  font-family: Arial;
-  text-align: center;
-  margin-top: 50px;
+:root{
+  --bg:#f3f6fb;
+  --card:#ffffff;
+  --primary:#2b6ef6;
+  --muted:#6b7280;
+  --success:#16a34a;
+  --danger:#dc2626;
 }
+/* utility */
+.hidden{display:none}
+*{box-sizing:border-box}
+body{
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background:var(--bg);
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.container{width:100%;padding:20px;max-width:420px}
+.card{background:var(--card);border-radius:12px;padding:24px;box-shadow:0 6px 18px rgba(20,30,60,0.06)}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:8px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:600}
+.tab.active{background:linear-gradient(90deg, rgba(43,110,246,0.12), rgba(43,110,246,0.06));color:var(--primary);border-color:rgba(43,110,246,0.12)}
+h1{margin:0 0 12px 0;font-size:1.4rem;color:#0f172a}
+.label{display:block;text-align:left;font-size:0.85rem;color:var(--muted);margin-top:10px}
+input, textarea{width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:8px;margin-top:6px}
+.password-row{display:flex;gap:8px}
+.password-row input{flex:1}
+.tiny{padding:8px 10px;font-size:0.8rem;border-radius:8px;background:#f3f4f6;border:1px solid #e6e9ef}
+.actions{display:flex;gap:10px;margin-top:16px}
+.primary{background:var(--primary);color:white;border:none;padding:10px 16px;border-radius:8px}
+.secondary {
+  background:transparent;color:var(--muted);border:1px solid rgba(15,23,42,0.06);padding:10px 16px;border-radius:8px
+}
+#btnRegister{background:transparent;color:var(--muted);border:1px solid rgba(15,23,42,0.06);padding:10px 16px;border-radius:8px}
+#btnRegister:hover{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.18);color:var(--success)}
+#btnRegister:active{transform:translateY(1px)}
+.card.mode-login{border-top:6px solid var(--primary)}
+.card.mode-register{border-top:6px solid var(--success)}
+.status{margin-top:14px;padding:10px;border-radius:8px;font-size:0.95rem}
+.status.info{background:#eef2ff;color:#1e293b}
+.status.success{background:#ecfdf5;color:var(--success)}
+.status.error{background:#fff1f2;color:var(--danger)}
+.tokenArea{margin-top:14px}
+.tokenArea.hidden{display:none}
+.token-actions{display:flex;gap:8px;margin-top:8px}
+button, .tiny, .primary{cursor:pointer}
 
-input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-}
+@media (max-width:420px){.card{padding:18px}}
 
-button {
-  padding: 10px 20px;
-  margin: 5px;
-}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.5);backdrop-filter:blur(2px);z-index:60}
+.modal{width:90%;max-width:420px;background:var(--card);padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.2);text-align:center;position:relative}
+.modal-close{position:absolute;right:12px;top:8px;border:none;background:transparent;font-size:1.4rem;cursor:pointer}
+.modal-icon{width:56px;height:56px;border-radius:999px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.modal .modal-actions{margin-top:14px;display:flex;justify-content:center}
+.modal .modal-actions .primary{padding:8px 14px}
+.modal-overlay.hidden{display:none}
+
+.modal-success .modal-icon{background:linear-gradient(90deg, rgba(22,163,74,0.12), rgba(22,163,74,0.06));color:var(--success)}
+.modal-error .modal-icon{background:linear-gradient(90deg, rgba(220,38,38,0.12), rgba(220,38,38,0.06));color:var(--danger)}
+.modal-info .modal-icon{background:linear-gradient(90deg, rgba(43,110,246,0.12), rgba(43,110,246,0.06));color:var(--primary)}
+
+/* password meter */
+.pwd-meter{height:8px;background:#f1f5f9;border-radius:8px;margin-top:8px;overflow:hidden}
+.meter-bar{height:100%;width:0%;transition:width 260ms ease, background-color 260ms ease}
+.meter-bar.weak{background:#f43f5e}
+.meter-bar.medium{background:#f59e0b}
+.meter-bar.strong{background:#10b981}
+
+/* profile */
+.profile{margin-top:16px;padding:12px;border-radius:8px;background:linear-gradient(180deg,#ffffff, #fbfdff);box-shadow:0 6px 12px rgba(12,18,30,0.04);text-align:left}
+.profile-row{padding:6px 0;color:#0f172a}
+.fade-in{animation:fadeIn 320ms ease both}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* subtle animations for card and buttons */
+.card{transition:transform 260ms ease, box-shadow 260ms ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(2,6,23,0.08)}
+button{transition:transform 160ms ease, box-shadow 160ms ease}
+button:active{transform:translateY(1px)}

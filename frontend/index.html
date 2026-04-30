@@ -2,20 +2,72 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login App</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Auth · Portafolio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <main class="container">
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button id="tabLogin" class="tab active" role="tab" aria-selected="true">Iniciar sesión</button>
+        <button id="tabRegister" class="tab" role="tab" aria-selected="false">Registrarse</button>
+      </div>
 
-  <h1>Login</h1>
+      <h1 id="cardTitle">Autenticación</h1>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+      <form id="authForm" novalidate>
+        <label class="label">Email</label>
+        <input id="email" type="email" placeholder="tu@correo.com" required>
 
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Registro</button>
+        <label class="label">Contraseña</label>
+        <div class="password-row">
+          <input id="password" type="password" placeholder="Mínimo 6 caracteres" required>
+          <button type="button" id="togglePwd" class="tiny">Mostrar</button>
+        </div>
+        <div class="pwd-meter" aria-hidden="true">
+          <div id="pwdMeter" class="meter-bar"></div>
+        </div>
+        <small id="pwdText" class="muted">&nbsp;</small>
 
-  <h2 id="result"></h2>
+        <div class="actions">
+          <button id="btnLogin" type="button" class="primary">Iniciar sesión</button>
+          <button id="btnRegister" type="button">Registrarse</button>
+        </div>
+      </form>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <div id="tokenArea" class="tokenArea hidden">
+        <label class="label">Token</label>
+        <textarea id="token" readonly rows="3"></textarea>
+        <div class="token-actions">
+          <button id="btnCopy" class="tiny">Copiar</button>
+          <button id="btnPerfil" class="tiny">Ver perfil</button>
+          <button id="btnLogout" class="tiny">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <div id="profile" class="profile hidden">
+        <h3>Perfil</h3>
+        <div class="profile-row"><strong>Email:</strong> <span id="profileEmail"></span></div>
+        <div class="profile-row"><strong>ID:</strong> <span id="profileId"></span></div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Modal de notificación -->
+  <div id="modalOverlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <button id="modalClose" class="modal-close" aria-label="Cerrar">×</button>
+      <div id="modalIcon" class="modal-icon"></div>
+      <h3 id="modalTitle">Notificación</h3>
+      <p id="modalMessage"></p>
+      <div class="modal-actions">
+        <button id="modalOk" class="primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
