@@ -127,7 +127,7 @@ Authorization: TU_TOKEN
 Respuesta:
 
 ```
-Bienvenido a tu perfil 🔐
+Bienvenido a tu perfil
 ```
 
 ---
