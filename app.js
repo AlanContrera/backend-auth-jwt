@@ -11,7 +11,30 @@ const authRoutes = require('./routes/auth.routes');
 const app = express();
 
 // middlewares
-app.use(cors()); 
+const CLIENT_URL = process.env.CLIENT_URL || 'https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app';
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (origin === CLIENT_URL) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', CLIENT_URL);
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    return res.sendStatus(204);
+  }
+  next();
+});
 app.use(express.json());
 
 // rutas
@@ -23,6 +46,7 @@ app.get('/', (req, res) => {
 });
 
 // servidor
-app.listen(3000, () => {
-  console.log('Servidor corriendo');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log('Servidor corriendo en puerto', PORT);
 });
