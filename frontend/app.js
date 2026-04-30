@@ -9,9 +9,8 @@ const setStatus = (msg, type = 'info') => {
 };
 
 // Modal helpers
-const showModal = (message, type = 'info', title = 'Notificación') => {
+const showModal = (message, type = 'info', title = 'Notificación', opts = {}) => {
   const overlay = $('modalOverlay');
-  const modal = overlay.querySelector('.modal');
   overlay.classList.remove('hidden');
   overlay.setAttribute('aria-hidden', 'false');
   // type classes
@@ -22,7 +21,12 @@ const showModal = (message, type = 'info', title = 'Notificación') => {
   // icon text
   const icon = $('modalIcon');
   icon.textContent = type === 'success' ? '✓' : type === 'error' ? '!' : 'i';
-  // focus
+  // viewProfile button
+  const viewBtn = $('modalViewProfile');
+  if (viewBtn) {
+    if (opts.viewProfile) viewBtn.classList.remove('hidden'); else viewBtn.classList.add('hidden');
+  }
+  // focus primary
   setTimeout(() => $('modalOk').focus(), 50);
 };
 
@@ -30,6 +34,7 @@ const hideModal = () => {
   const overlay = $('modalOverlay');
   overlay.classList.add('hidden');
   overlay.setAttribute('aria-hidden', 'true');
+  const viewBtn = $('modalViewProfile'); if (viewBtn) viewBtn.classList.add('hidden');
 };
 
 const setLoading = (isLoading) => {
@@ -97,12 +102,15 @@ async function register() {
     showModal(err, 'error', 'Error');
     return;
   }
-
   try {
     setLoading(true);
     const text = await doRegister(email, password);
+    // mostrar éxito y volver al login
     setStatus(text, 'success');
     showModal(text, 'success', 'Registro exitoso');
+    // cambiar a pestaña login y limpiar campos
+    setMode('login');
+    const eEl = $('email'); const pEl = $('password'); if (eEl) eEl.value = ''; if (pEl) pEl.value = '';
   } catch (e) {
     setStatus('Error de red o servidor', 'error');
     showModal('Error de red o servidor', 'error', 'Error');
@@ -126,10 +134,10 @@ async function login() {
     const data = await doLogin(email, password);
     if (data && data.token) {
       localStorage.setItem('token', data.token);
-      $('token').value = data.token;
-      $('tokenArea').classList.remove('hidden');
+      // almacenar token pero no mostrarlo en UI
       setStatus('Login exitoso', 'success');
-      showModal('Has iniciado sesión correctamente', 'success', 'Login exitoso');
+      // mostrar modal que indica token generado y ofrecer ver perfil
+      showModal('Token generado. Puedes ver tu perfil.', 'success', 'Login exitoso', { viewProfile: true });
     } else if (data && data.msg) {
       setStatus(data.msg, 'error');
       showModal(data.msg, 'error', 'Error');
@@ -173,7 +181,7 @@ async function perfil() {
 }
 
 function copyToken() {
-  const token = $('token').value;
+  const token = localStorage.getItem('token');
   if (!token) return setStatus('No hay token para copiar', 'error');
   navigator.clipboard.writeText(token).then(() => setStatus('Token copiado al portapapeles', 'success'))
     .catch(() => setStatus('No se pudo copiar', 'error'));
@@ -181,8 +189,7 @@ function copyToken() {
 
 function logout() {
   localStorage.removeItem('token');
-  $('token').value = '';
-  $('tokenArea').classList.add('hidden');
+  const p = $('profile'); if (p) p.classList.add('hidden');
   setStatus('Sesión cerrada', 'info');
 }
 
@@ -190,9 +197,9 @@ function logout() {
 document.addEventListener('DOMContentLoaded', () => {
   $('btnRegister').addEventListener('click', register);
   $('btnLogin').addEventListener('click', login);
-  $('btnPerfil').addEventListener('click', perfil);
-  $('btnCopy').addEventListener('click', copyToken);
-  $('btnLogout').addEventListener('click', logout);
+  if ($('btnPerfil')) $('btnPerfil').addEventListener('click', perfil);
+  if ($('btnCopy')) $('btnCopy').addEventListener('click', copyToken);
+  if ($('btnLogout')) $('btnLogout').addEventListener('click', logout);
 
   $('togglePwd').addEventListener('click', () => {
     const p = $('password');
@@ -208,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($('modalClose')) $('modalClose').addEventListener('click', hideModal);
   if ($('modalOk')) $('modalOk').addEventListener('click', hideModal);
   if ($('modalOverlay')) $('modalOverlay').addEventListener('click', (e) => { if (e.target === $('modalOverlay')) hideModal(); });
+  if ($('modalViewProfile')) $('modalViewProfile').addEventListener('click', () => { hideModal(); window.location.href = 'profile.html'; });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideModal(); });
 
   // tabs (login / register)
@@ -229,6 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // hide password meter in login
       const meter = $('pwdMeter'); if (meter) meter.parentElement.classList.add('hidden');
       const pwdText = $('pwdText'); if (pwdText) pwdText.classList.add('hidden');
+      // limpiar campos al cambiar pestaña
+      const emailEl = $('email'); const pwdEl = $('password'); if (emailEl) emailEl.value = ''; if (pwdEl) pwdEl.value = '';
     } else {
       tabRegister.classList.add('active'); tabRegister.setAttribute('aria-selected','true');
       tabLogin.classList.remove('active'); tabLogin.setAttribute('aria-selected','false');
@@ -240,6 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // show password meter in register
       const meter2 = $('pwdMeter'); if (meter2) meter2.parentElement.classList.remove('hidden');
       const pwdText2 = $('pwdText'); if (pwdText2) pwdText2.classList.remove('hidden');
+      // limpiar campos al cambiar pestaña
+      const emailEl2 = $('email'); const pwdEl2 = $('password'); if (emailEl2) emailEl2.value = ''; if (pwdEl2) pwdEl2.value = '';
     }
   };
 
@@ -259,14 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // inicializar modo
   setMode('login');
 
-  // load token if exists
+  // load token if exists (do not render token in UI)
   const t = localStorage.getItem('token');
   if (t) {
-    $('token').value = t;
-    $('tokenArea').classList.remove('hidden');
+    // try to load profile automatically if token present
+    perfil();
   }
-  // try to load profile automatically if token present
-  if (t) perfil();
 });
 
 // show profile in UI

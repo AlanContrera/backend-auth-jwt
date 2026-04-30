@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Auth · Portafolio</title>
+  <title>Auth</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,15 +38,8 @@
 
       <div id="status" class="status" aria-live="polite"></div>
 
-      <div id="tokenArea" class="tokenArea hidden">
-        <label class="label">Token</label>
-        <textarea id="token" readonly rows="3"></textarea>
-        <div class="token-actions">
-          <button id="btnCopy" class="tiny">Copiar</button>
-          <button id="btnPerfil" class="tiny">Ver perfil</button>
-          <button id="btnLogout" class="tiny">Cerrar sesión</button>
-        </div>
-      </div>
+      <!-- tokenArea oculto por seguridad: no mostrar token en UI -->
+      <div id="tokenArea" class="tokenArea hidden" aria-hidden="true"></div>
 
       <div id="profile" class="profile hidden">
         <h3>Perfil</h3>
@@ -64,6 +57,7 @@
       <h3 id="modalTitle">Notificación</h3>
       <p id="modalMessage"></p>
       <div class="modal-actions">
+        <button id="modalViewProfile" class="tiny hidden">Ver perfil</button>
         <button id="modalOk" class="primary">Aceptar</button>
       </div>
     </div>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Perfil</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <div class="card">
+      <h1>Perfil</h1>
+      <div id="profileCard" class="profile-card">
+        <div class="avatar">👤</div>
+        <div class="info">
+          <div class="line"><strong id="name">Usuario</strong></div>
+          <div class="line muted" id="email">correo@ejemplo.com</div>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:16px">
+        <button id="btnBack" class="tiny">Volver</button>
+        <button id="btnLogoutProfile" class="primary">Cerrar sesión</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API = 'https://backend-auth-jwt-lato.onrender.com';
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'index.html';
+    }
+
+    async function loadProfile() {
+      try {
+        const res = await fetch(`${API}/perfil`, { headers: { 'Authorization': token } });
+        if (res.ok) {
+          const data = await res.json();
+          const email = data.email || data.user?.email || '';
+          const name = data.name || (email.split('@')[0] || 'Usuario');
+          document.getElementById('name').textContent = name;
+          document.getElementById('email').textContent = email;
+        } else {
+          // fallback: use token-derived or local
+          const email = '';
+          document.getElementById('name').textContent = 'Usuario';
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    document.getElementById('btnBack').addEventListener('click', () => { window.location.href = 'index.html'; });
+    document.getElementById('btnLogoutProfile').addEventListener('click', () => { localStorage.removeItem('token'); window.location.href = 'index.html'; });
+
+    loadProfile();
+  </script>
+</body>
+</html>

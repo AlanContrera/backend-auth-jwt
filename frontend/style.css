@@ -57,6 +57,7 @@ button, .tiny, .primary{cursor:pointer}
 .modal-icon{width:56px;height:56px;border-radius:999px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:700}
 .modal .modal-actions{margin-top:14px;display:flex;justify-content:center}
 .modal .modal-actions .primary{padding:8px 14px}
+.modal .modal-actions .tiny{margin-right:8px}
 .modal-overlay.hidden{display:none}
 
 .modal-success .modal-icon{background:linear-gradient(90deg, rgba(22,163,74,0.12), rgba(22,163,74,0.06));color:var(--success)}
