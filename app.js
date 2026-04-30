@@ -9,7 +9,9 @@ app.use(express.json());
 const authRoutes = require('./routes/auth.routes');
 
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+  origin: 'https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app'
+}));
 
 app.use('/', authRoutes);
 
