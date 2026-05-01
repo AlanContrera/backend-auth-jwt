@@ -81,7 +81,9 @@ async function doRegister(email, password) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
-  return res.text();
+  const text = await res.text();
+  if (!res.ok) throw new Error(text || res.statusText || 'Error en registro');
+  return text;
 }
 
 async function doLogin(email, password) {
@@ -112,8 +114,10 @@ async function register() {
     setMode('login');
     const eEl = $('email'); const pEl = $('password'); if (eEl) eEl.value = ''; if (pEl) pEl.value = '';
   } catch (e) {
-    setStatus('Error de red o servidor', 'error');
-    showModal('Error de red o servidor', 'error', 'Error');
+    console.error('Registro fallo:', e);
+    const msg = e && e.message ? e.message : 'Error de red o servidor';
+    setStatus(msg, 'error');
+    showModal(msg, 'error', 'Error');
   } finally {
     setLoading(false);
   }
