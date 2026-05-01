@@ -4,6 +4,11 @@ const API = "https://backend-auth-jwt-lato.onrender.com";
 const $ = id => document.getElementById(id);
 const setStatus = (msg, type = 'info') => {
   const el = $('status');
+  if (!el) {
+    // si no existe el contenedor de estado (oculto por UI), loguear en consola para depuración
+    console.log(`[status:${type}] ${msg}`);
+    return;
+  }
   el.textContent = msg;
   el.className = `status ${type}`;
 };
