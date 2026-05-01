@@ -223,9 +223,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideModal(); });
 
   // tabs (login / register)
-  let currentMode = 'login';
-  const setMode = (mode) => {
-    currentMode = mode;
+  // mover currentMode y setMode a ámbito superior para que otras funciones (p.ej. register)
+  // puedan invocarlas fuera de este listener.
+  if (typeof window.currentMode === 'undefined') window.currentMode = 'login';
+
+  window.setMode = function (mode) {
+    window.currentMode = mode;
     const card = document.querySelector('.card');
     const tabLogin = $('tabLogin');
     const tabRegister = $('tabRegister');
@@ -233,34 +236,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mode === 'login') {
       tabLogin.classList.add('active'); tabLogin.setAttribute('aria-selected','true');
       tabRegister.classList.remove('active'); tabRegister.setAttribute('aria-selected','false');
-      card.classList.remove('mode-register'); card.classList.add('mode-login');
-      title.innerText = 'Iniciar sesión';
-      $('btnLogin').classList.add('primary');
-      $('btnLogin').style.display = 'inline-block';
-      $('btnRegister').style.display = 'none';
+      if (card) { card.classList.remove('mode-register'); card.classList.add('mode-login'); }
+      if (title) title.innerText = 'Iniciar sesión';
+      if ($('btnLogin')) { $('btnLogin').classList.add('primary'); $('btnLogin').style.display = 'inline-block'; }
+      if ($('btnRegister')) $('btnRegister').style.display = 'none';
       // hide password meter in login
-      const meter = $('pwdMeter'); if (meter) meter.parentElement.classList.add('hidden');
+      const meter = $('pwdMeter'); if (meter && meter.parentElement) meter.parentElement.classList.add('hidden');
       const pwdText = $('pwdText'); if (pwdText) pwdText.classList.add('hidden');
       // limpiar campos al cambiar pestaña
       const emailEl = $('email'); const pwdEl = $('password'); if (emailEl) emailEl.value = ''; if (pwdEl) pwdEl.value = '';
     } else {
-      tabRegister.classList.add('active'); tabRegister.setAttribute('aria-selected','true');
-      tabLogin.classList.remove('active'); tabLogin.setAttribute('aria-selected','false');
-      card.classList.remove('mode-login'); card.classList.add('mode-register');
-      title.innerText = 'Crear cuenta';
-      $('btnLogin').classList.remove('primary');
-      $('btnLogin').style.display = 'none';
-      $('btnRegister').style.display = 'inline-block';
+      if (tabRegister) { tabRegister.classList.add('active'); tabRegister.setAttribute('aria-selected','true'); }
+      if (tabLogin) { tabLogin.classList.remove('active'); tabLogin.setAttribute('aria-selected','false'); }
+      if (card) { card.classList.remove('mode-login'); card.classList.add('mode-register'); }
+      if (title) title.innerText = 'Crear cuenta';
+      if ($('btnLogin')) { $('btnLogin').classList.remove('primary'); $('btnLogin').style.display = 'none'; }
+      if ($('btnRegister')) $('btnRegister').style.display = 'inline-block';
       // show password meter in register
-      const meter2 = $('pwdMeter'); if (meter2) meter2.parentElement.classList.remove('hidden');
+      const meter2 = $('pwdMeter'); if (meter2 && meter2.parentElement) meter2.parentElement.classList.remove('hidden');
       const pwdText2 = $('pwdText'); if (pwdText2) pwdText2.classList.remove('hidden');
       // limpiar campos al cambiar pestaña
       const emailEl2 = $('email'); const pwdEl2 = $('password'); if (emailEl2) emailEl2.value = ''; if (pwdEl2) pwdEl2.value = '';
     }
   };
 
-  $('tabLogin').addEventListener('click', () => setMode('login'));
-  $('tabRegister').addEventListener('click', () => setMode('register'));
+  $('tabLogin').addEventListener('click', () => window.setMode('login'));
+  $('tabRegister').addEventListener('click', () => window.setMode('register'));
 
   // evitar submit por defecto y manejar Enter según modo
   const form = $('authForm');
