@@ -283,6 +283,7 @@ function setMode(mode) {
     if ($('btnLogin')) { $('btnLogin').classList.add('primary'); $('btnLogin').style.display = 'inline-block'; }
     if ($('btnRegister')) $('btnRegister').style.display = 'none';
     const meter = $('pwdMeter'); if (meter && meter.parentElement) meter.parentElement.classList.add('hidden');
+    const nameFields = $('nameFields'); if (nameFields) nameFields.style.display = 'none';
     const pwdText = $('pwdText'); if (pwdText) pwdText.classList.add('hidden');
     const emailEl = $('email'); const pwdEl = $('password'); if (emailEl) emailEl.value = ''; if (pwdEl) pwdEl.value = '';
   } else {
@@ -293,6 +294,7 @@ function setMode(mode) {
     if ($('btnLogin')) { $('btnLogin').classList.remove('primary'); $('btnLogin').style.display = 'none'; }
     if ($('btnRegister')) $('btnRegister').style.display = 'inline-block';
     const meter2 = $('pwdMeter'); if (meter2 && meter2.parentElement) meter2.parentElement.classList.remove('hidden');
+    const nameFields2 = $('nameFields'); if (nameFields2) nameFields2.style.display = '';
     const pwdText2 = $('pwdText'); if (pwdText2) pwdText2.classList.remove('hidden');
     const emailEl2 = $('email'); const pwdEl2 = $('password'); if (emailEl2) emailEl2.value = ''; if (pwdEl2) pwdEl2.value = '';
   }

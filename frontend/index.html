@@ -17,11 +17,13 @@
       <h1 id="cardTitle">Autenticación</h1>
 
       <form id="authForm" novalidate>
-        <label class="label">Nombre</label>
-        <input id="firstName" type="text" placeholder="Tu nombre" required>
+        <div id="nameFields">
+          <label class="label">Nombre</label>
+          <input id="firstName" type="text" placeholder="Tu nombre" required>
 
-        <label class="label">Apellido</label>
-        <input id="lastName" type="text" placeholder="Tu apellido" required>
+          <label class="label">Apellido</label>
+          <input id="lastName" type="text" placeholder="Tu apellido" required>
+        </div>
         <label class="label">Email</label>
         <input id="email" type="email" placeholder="tu@correo.com" required>
 
