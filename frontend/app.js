@@ -96,7 +96,15 @@ async function doLogin(email, password) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
-  return res.json();
+  const contentType = res.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.msg || JSON.stringify(json));
+    return json;
+  }
+  const text = await res.text();
+  if (!res.ok) throw new Error(text || res.statusText);
+  try { return JSON.parse(text); } catch { return { msg: text }; }
 }
 
 async function register() {
@@ -147,8 +155,8 @@ async function login() {
       localStorage.setItem('token', data.token);
       // almacenar token pero no mostrarlo en UI
       setStatus('Login exitoso', 'success');
-      // mostrar modal que indica token generado y ofrecer ver perfil
-      showModal('Token generado. Puedes ver tu perfil.', 'success', 'Login exitoso', { viewProfile: true });
+      // redirigir a perfil directamente
+      window.location.href = 'profile.html';
     } else if (data && data.msg) {
       setStatus(data.msg, 'error');
       showModal(data.msg, 'error', 'Error');
@@ -157,8 +165,10 @@ async function login() {
       showModal('Credenciales inválidas', 'error', 'Error');
     }
   } catch (e) {
-    setStatus('Error de red o servidor', 'error');
-    showModal('Error de red o servidor', 'error', 'Error');
+    console.error('Login fallo:', e);
+    const msg = e && e.message ? e.message : 'Error de red o servidor';
+    setStatus(msg, 'error');
+    showModal(msg, 'error', 'Error');
   } finally {
     setLoading(false);
   }
