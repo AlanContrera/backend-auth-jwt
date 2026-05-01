@@ -43,10 +43,14 @@ const setLoading = (isLoading) => {
   if (isLoading) setStatus('Enviando...');
 };
 
-const validate = (email, password) => {
+const validate = (email, password, firstName, lastName, mode = 'login') => {
   const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   if (!emailRe.test(email)) return 'Email inválido';
   if (!password || password.length < 6) return 'La contraseña debe tener al menos 6 caracteres';
+  if (mode === 'register') {
+    if (!firstName || firstName.trim().length < 2) return 'El nombre es requerido (mínimo 2 caracteres)';
+    if (!lastName || lastName.trim().length < 2) return 'El apellido es requerido (mínimo 2 caracteres)';
+  }
   return null;
 };
 
@@ -75,11 +79,11 @@ const updatePwdMeter = (pwd) => {
   else { meter.classList.add('strong'); text.textContent = 'Fuerte'; }
 };
 
-async function doRegister(email, password) {
+async function doRegister(email, password, firstName, lastName) {
   const res = await fetch(`${API}/registro`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ email, password, firstName, lastName })
   });
   const text = await res.text();
   if (!res.ok) throw new Error(text || res.statusText || 'Error en registro');
@@ -96,9 +100,11 @@ async function doLogin(email, password) {
 }
 
 async function register() {
+  const firstName = $('firstName') ? $('firstName').value.trim() : '';
+  const lastName = $('lastName') ? $('lastName').value.trim() : '';
   const email = $('email').value.trim();
   const password = $('password').value;
-  const err = validate(email, password);
+  const err = validate(email, password, firstName, lastName, 'register');
   if (err) {
     setStatus(err, 'error');
     showModal(err, 'error', 'Error');
@@ -106,13 +112,14 @@ async function register() {
   }
   try {
     setLoading(true);
-    const text = await doRegister(email, password);
+    const text = await doRegister(email, password, firstName, lastName);
     // mostrar éxito y volver al login
     setStatus(text, 'success');
     showModal(text, 'success', 'Registro exitoso');
     // cambiar a pestaña login y limpiar campos
     setMode('login');
-    const eEl = $('email'); const pEl = $('password'); if (eEl) eEl.value = ''; if (pEl) pEl.value = '';
+    const eEl = $('email'); const pEl = $('password'); const fEl = $('firstName'); const lEl = $('lastName');
+    if (eEl) eEl.value = ''; if (pEl) pEl.value = ''; if (fEl) fEl.value = ''; if (lEl) lEl.value = '';
   } catch (e) {
     console.error('Registro fallo:', e);
     const msg = e && e.message ? e.message : 'Error de red o servidor';

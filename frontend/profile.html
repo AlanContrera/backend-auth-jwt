@@ -15,6 +15,7 @@
         <div class="info">
           <div class="line"><strong id="name">Usuario</strong></div>
           <div class="line muted" id="email">correo@ejemplo.com</div>
+          <div class="line muted" id="lastname" style="display:none"></div>
         </div>
       </div>
       <div class="actions" style="margin-top:16px">
@@ -37,13 +38,18 @@
         if (res.ok) {
           const data = await res.json();
           const email = data.email || data.user?.email || '';
-          const name = data.name || (email.split('@')[0] || 'Usuario');
-          document.getElementById('name').textContent = name;
+          const firstName = data.firstName || data.name || '';
+          const lastName = data.lastName || data.surname || '';
+          const fullname = (firstName || lastName) ? `${firstName} ${lastName}`.trim() : (email.split('@')[0] || 'Usuario');
+          document.getElementById('name').textContent = fullname;
           document.getElementById('email').textContent = email;
+          if (lastName) {
+            const ln = document.getElementById('lastname'); if (ln) { ln.textContent = lastName; ln.style.display = 'block'; }
+          }
         } else {
-          // fallback: use token-derived or local
-          const email = '';
-          document.getElementById('name').textContent = 'Usuario';
+          // fallback: limpiar token y forzar login
+          localStorage.removeItem('token');
+          window.location.href = 'index.html';
         }
       } catch (e) {
         console.error(e);
