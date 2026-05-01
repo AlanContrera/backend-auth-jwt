@@ -241,8 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // load token if exists (do not render token in UI)
   const t = localStorage.getItem('token');
-  if (t) {
-    // try to load profile automatically if token present
+  // No cargar el perfil automáticamente en la página de login.
+  // Solo intentar cargar perfil automáticamente si estamos en profile.html
+  if (t && window.location.pathname && window.location.pathname.includes('profile.html')) {
     perfil();
   }
 });
