@@ -186,7 +186,7 @@ async function perfil() {
   try {
     setLoading(true);
     const res = await fetch(`${API}/perfil`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+      headers: { 'Authorization': token }
     });
     // intentar parsear JSON; si no, mostrar texto
     let data;
