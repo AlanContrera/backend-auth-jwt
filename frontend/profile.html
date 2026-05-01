@@ -13,11 +13,12 @@
       <div id="profileCard" class="profile-card">
         <div class="avatar">👤</div>
         <div class="info">
-          <div class="line"><strong id="name">Usuario</strong></div>
-          <div class="line muted" id="email">correo@ejemplo.com</div>
+          <div class="line"><strong id="name">Cargando...</strong></div>
+          <div class="line muted" id="email">&nbsp;</div>
           <div class="line muted" id="lastname" style="display:none"></div>
         </div>
       </div>
+      <div id="profileStatus" class="muted" style="margin-top:12px"></div>
       <div class="actions" style="margin-top:16px">
         <button id="btnBack" class="tiny">Volver</button>
         <button id="btnLogoutProfile" class="primary">Cerrar sesión</button>
@@ -33,11 +34,17 @@
     }
 
     async function loadProfile() {
+      const statusEl = document.getElementById('profileStatus');
       try {
+        statusEl.textContent = 'Cargando perfil...';
         const res = await fetch(`${API}/perfil`, { headers: { 'Authorization': token } });
-        if (res.ok) {
-          const data = await res.json();
-          const email = data.email || data.user?.email || '';
+        const text = await res.text();
+        // intentar parsear JSON
+        let data = null;
+        try { data = text ? JSON.parse(text) : null; } catch(e) { data = null; }
+        console.log('/perfil response', res.status, text, data);
+        if (res.ok && data) {
+          const email = data.email || '';
           const firstName = data.firstName || data.name || '';
           const lastName = data.lastName || data.surname || '';
           const fullname = (firstName || lastName) ? `${firstName} ${lastName}`.trim() : (email.split('@')[0] || 'Usuario');
@@ -46,13 +53,17 @@
           if (lastName) {
             const ln = document.getElementById('lastname'); if (ln) { ln.textContent = lastName; ln.style.display = 'block'; }
           }
+          statusEl.textContent = '';
         } else {
-          // fallback: limpiar token y forzar login
+          // mostrar mensaje claro y limpiar token
+          console.warn('Perfil no disponible', res.status, text);
           localStorage.removeItem('token');
-          window.location.href = 'index.html';
+          statusEl.textContent = 'No se pudo cargar el perfil. Vuelve a iniciar sesión.';
+          setTimeout(() => window.location.href = 'index.html', 1500);
         }
       } catch (e) {
-        console.error(e);
+        console.error('Error cargando perfil:', e);
+        statusEl.textContent = 'Error de red al cargar perfil.';
       }
     }
 
