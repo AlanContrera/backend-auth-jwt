@@ -15,7 +15,6 @@
         <div class="info">
           <div class="line"><strong id="name">Cargando...</strong></div>
           <div class="line muted" id="email">&nbsp;</div>
-          <div class="line muted" id="lastname" style="display:none"></div>
         </div>
       </div>
       <div id="profileStatus" class="muted" style="margin-top:12px"></div>
@@ -37,7 +36,7 @@
       const statusEl = document.getElementById('profileStatus');
       try {
         statusEl.textContent = 'Cargando perfil...';
-        const res = await fetch(`${API}/perfil`, { headers: { 'Authorization': token } });
+        const res = await fetch(`${API}/perfil`, { headers: { 'Authorization': `Bearer ${token}` } });
         const text = await res.text();
         // intentar parsear JSON
         let data = null;
@@ -50,9 +49,8 @@
           const fullname = (firstName || lastName) ? `${firstName} ${lastName}`.trim() : (email.split('@')[0] || 'Usuario');
           document.getElementById('name').textContent = fullname;
           document.getElementById('email').textContent = email;
-          if (lastName) {
-            const ln = document.getElementById('lastname'); if (ln) { ln.textContent = lastName; ln.style.display = 'block'; }
-          }
+          const ln = document.getElementById('lastname');
+          if (ln) { ln.textContent = lastName || ''; ln.style.display = lastName ? 'inline' : 'none'; }
           statusEl.textContent = '';
         } else {
           // mostrar mensaje claro y limpiar token

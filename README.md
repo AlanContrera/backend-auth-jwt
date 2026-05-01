@@ -1,145 +1,60 @@
-# Backend Auth JWT
+# Backend Practicas
 
-API REST de autenticación construida con Node.js, Express y MongoDB.
+API de autenticación minimal para demostración y portafolio. Implementada con Node.js, Express, MongoDB (Mongoose), `bcrypt` y JWT.
 
----
+Descripción breve
+- Registro y login con JWT.
+- Ruta protegida `/perfil` que devuelve JSON con `id`, `email`, `firstName`, `lastName`.
 
-## Funcionalidades
+Despliegue
+- Frontend (carpeta `frontend/`) desplegado en Vercel.
+- API desplegada en Render (asegúrate de actualizar la variable `CLIENT_URL` en Render con el dominio de Vercel).
 
-* Registro de usuarios
-* Login con autenticación
-* Encriptación de contraseñas con bcrypt
-* Generación de tokens con JWT
-* Rutas protegidas
-
----
-
-## Tecnologías
-
-* Node.js
-* Express
-* MongoDB
-* Mongoose
-* bcrypt
-* jsonwebtoken
-
----
-
-## Estructura del proyecto
-
-```
-/models
-/routes
-/middlewares
-/config
-app.js
-```
-
----
-
-##  Instalación
-
-Clona el repositorio e instala dependencias:
+Instalación rápida
+1. Copia `.env.example` a `.env` y completa las variables.
+2. Instala dependencias:
 
 ```
 npm install
 ```
 
----
+Scripts útiles
 
-## Variables de entorno
+```
+npm start    # arranca con node
+npm run dev  # arranca con nodemon (dev)
+```
 
-Crea un archivo `.env` en la raíz del proyecto:
+Variables de entorno (mínimas)
 
 ```
 PORT=3000
 JWT_SECRET=tu_secreto
-MONGO_URI=mongodb://127.0.0.1:27017/miapp
+MONGO_URI=tu_mongo_uri
+CLIENT_URL=https://tu-frontend.vercel.app
 ```
 
----
-
-## Ejecutar proyecto
+Ejecutar local
 
 ```
-node app.js
+npm run dev
 ```
 
-El servidor correrá en:
+Endpoints principales
 
-```
-http://localhost:3000
-```
+- POST `/registro`  — Body: `{ email, password, firstName, lastName }` — Respuesta JSON con usuario (sin contraseña) y código HTTP 201.
+- POST `/login`     — Body: `{ email, password }` — Respuesta JSON `{ token }`  (JWT).
+- GET `/perfil`     — Header: `Authorization: Bearer <token>` — Respuesta JSON `{ id, email, firstName, lastName }`.
 
----
+Notas importantes
+- La API responde siempre JSON en errores y éxito para facilitar integración con frontends.
+- El middleware de auth acepta el encabezado `Authorization: Bearer <token>`.
+- Asegúrate de redeplegar la API en Render después de actualizar `CLIENT_URL` para resolver problemas de CORS.
 
-## Endpoints
+Sugerencias para presentar en entrevistas
+- Explica la decisión de usar JWT sin estado y el trade-off con sesiones centradas en servidor.
+- Menciona las mejoras futuras: validación con `express-validator` o `Joi`, tests, e2e, y CI/CD.
 
-### Registro
-
-**POST** `/registro`
-
-Body:
-
-```
-{
-  "email": "test@test.com",
-  "password": "1234"
-}
-
-```
-
----
-
-### Login
-
-**POST** `/login`
-
-Body:
-
-```
-{
-  "email": "test@test.com",
-  "password": "1234"
-}
-```
-
-Respuesta:
-
-```
-{
-  "token": "Pega aquí el token obtenido del login"
-}
-```
-
----
-
-### Perfil (Ruta protegida)
-
-**GET** `/perfil`
-
-Header requerido:
-
-```
-Authorization: TU_TOKEN
-```
-
-Respuesta:
-
-```
-Bienvenido a tu perfil
-```
-
----
-
-## Notas
-
-* Las contraseñas se almacenan encriptadas con bcrypt
-* Se utiliza JWT para autenticación
-* Las rutas protegidas requieren un token válido
-
----
-
-## Autor
+Autor
 
 Alan Contreras

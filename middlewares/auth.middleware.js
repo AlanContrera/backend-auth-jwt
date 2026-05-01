@@ -1,16 +1,18 @@
 const jwt = require('jsonwebtoken');
 
 function auth(req, res, next) {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ msg: 'Acceso denegado' });
 
-  if (!token) return res.send('X Acceso denegado X');
+  // Soportar tanto 'Bearer <token>' como el token plano
+  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
 
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     req.user = verified;
-    next();
-  } catch {
-    res.send('X Token inválido X');
+    return next();
+  } catch (err) {
+    return res.status(401).json({ msg: 'Token inválido' });
   }
 }
 

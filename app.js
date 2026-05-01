@@ -14,7 +14,7 @@ const app = express();
 // Configurar CORS de forma segura
 const rawClient = process.env.CLIENT_URL || 'https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app';
 const CLIENT_URLS = rawClient.split(',').map(s => s.trim()).filter(Boolean);
-console.log('Allowed client origins:', CLIENT_URLS);
+if (process.env.NODE_ENV !== 'production') console.log('Allowed client origins:', CLIENT_URLS);
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -31,7 +31,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// simple preflight responder (no errores)
+// simple preflight responder
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     const origin = req.headers.origin;
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
       res.header('Access-Control-Allow-Credentials', 'true');
       return res.sendStatus(204);
     }
-    // respond 204 to OPTIONS even if origin not allowed (browser will block)
+    // origin not allowed -> respond 204 (browser will block actual request)
     return res.sendStatus(204);
   }
   next();

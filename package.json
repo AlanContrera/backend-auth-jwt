@@ -2,8 +2,10 @@
   "name": "backend-practicas",
   "version": "1.0.0",
   "description": "",
-  "main": "PRACTICA1.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,4 +20,9 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0"
   }
+  ,
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
+ 
