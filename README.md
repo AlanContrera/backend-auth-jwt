@@ -1,79 +1,89 @@
 # Proyecto de Autenticación Básica
 
-Este es uno de mis primeros proyectos prácticos como desarrollador del lado del servidor. El objetivo de este proyecto fue aprender a construir un sistema de inicio de sesión y registro de usuarios, protegiendo la información con contraseñas seguras y utilizando tokens.
+Este es un proyecto práctico enfocado en el desarrollo backend. El objetivo principal fue aprender y aplicar conceptos fundamentales como la creación de un sistema de registro e inicio de sesión, el manejo de contraseñas de forma segura y la protección de rutas mediante JSON Web Tokens (JWT).
 
-Construí tanto la parte del servidor como la interfaz visual para demostrar que todo el flujo funciona correctamente.
+Recientemente he refactorizado el proyecto para mejorar su estructura y aplicar buenas prácticas, separando responsabilidades y mejorando el manejo de errores.
 
 ## Enlaces del proyecto publicado
 
-- Interfaz de usuario: [https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app](https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app)
-- Servidor: [https://backend-auth-jwt-lato.onrender.com](https://backend-auth-jwt-lato.onrender.com)
+- **Interfaz de usuario:** [Frontend en Vercel](https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app)
+- **API (Servidor):** [Backend en Render](https://backend-auth-jwt-lato.onrender.com)
 
-Nota: El servidor está alojado en un servicio gratuito, por lo que puede tardar un poco en responder la primera vez que se intenta iniciar sesión.
+> **Nota:** El servidor está alojado en un plan gratuito, por lo que la primera petición puede tardar unos segundos en responder mientras el servidor "despierta".
 
-## ¿Qué hace este proyecto?
+## Características Principales
 
-- Registro de usuarios: Permite a un nuevo usuario crear una cuenta.
-- Inicio de sesión: Verifica el correo electrónico y la contraseña para dejar entrar al usuario.
-- Seguridad: Las contraseñas no se guardan como texto plano, sino que se encriptan.
-- Protección de rutas: Una vez que el usuario inicia sesión, recibe un "token" que le permite acceder a la sección de su perfil. Si no tiene ese token, el servidor le niega el acceso.
-- Interfaz sencilla: Creé una interfaz básica con HTML, CSS y JavaScript puro para poder probar el servidor de forma visual.
+- **Registro de usuarios:** Permite a un nuevo usuario crear una cuenta validando sus datos.
+- **Inicio de sesión (Login):** Verifica el correo electrónico y la contraseña para autenticar al usuario.
+- **Seguridad:** Las contraseñas se encriptan utilizando `bcrypt` con 10 rondas de sal, nunca se guardan en texto plano.
+- **Protección de rutas (JWT):** Tras un login exitoso, el servidor entrega un token JWT con tiempo de expiración (1 hora) que permite acceder a rutas protegidas como el perfil.
+- **Validación de datos:** Uso de `express-validator` para asegurar que el correo tenga el formato correcto y la contraseña cumpla con requisitos mínimos.
+- **Manejo global de errores:** Middleware dedicado para capturar y estandarizar las respuestas de error en toda la aplicación.
 
-## Tecnologías utilizadas
+## Tecnologías Utilizadas
 
-- Node.js y Express: Para construir el servidor web.
-- MongoDB y Mongoose: Como base de datos para guardar la información de los usuarios.
-- jsonwebtoken: Para generar y leer los tokens de inicio de sesión.
-- bcrypt: Para encriptar las contraseñas.
-- HTML, CSS y JavaScript: Para la interfaz visual.
+- **Node.js y Express:** Entorno de ejecución y framework para construir el servidor.
+- **MongoDB y Mongoose:** Base de datos NoSQL y ODM para modelar y almacenar la información de los usuarios.
+- **jsonwebtoken (JWT):** Generación y validación de tokens de acceso.
+- **bcrypt:** Hasheo y verificación de contraseñas.
+- **express-validator:** Validación de datos de entrada en las peticiones.
+- **HTML, CSS y JavaScript (Vanilla):** Para la interfaz visual del cliente.
 
-## Rutas del servidor
+## Estructura del Proyecto
 
-| Método  | Ruta          | Descripción                                 | Requiere iniciar sesión |
-|---------|---------------|----------------------------------------- - -|------------------------ |
-| GET     | `/`           | Comprueba si el servidor está funcionando.  | No                     |
-| POST    | `/registro`   | Crea un nuevo usuario en la base de datos.  | No                      |
-| POST    | `/login`      | Verifica los datos y devuelve el token.     | No                     |
-| GET     | `/perfil`     | Muestra la información del usuario.         | Sí                     |
+El código está organizado siguiendo el patrón de separación de responsabilidades:
+- `routes/`: Define las rutas de la API.
+- `controllers/`: Contiene la lógica de negocio para cada ruta.
+- `middlewares/`: Funciones intermedias para autenticación, validación y manejo de errores.
+- `models/`: Esquemas de base de datos de Mongoose.
 
-## Cómo probar el proyecto en tu computadora
+## Endpoints de la API
 
-1. Descargar el código
-```text
-git clone https://github.com/AlanContrera/backend-auth-jwt.git
-cd backend-auth-jwt
-```
+| Método | Ruta         | Descripción                                     | Acceso    |
+|--------|--------------|-------------------------------------------------|-----------|
+| GET    | `/`          | Comprueba si el servidor está funcionando.      | Público   |
+| POST   | `/registro`  | Valida datos y crea un nuevo usuario.           | Público   |
+| POST   | `/login`     | Autentica al usuario y devuelve el token JWT.   | Público   |
+| GET    | `/perfil`    | Devuelve la información del usuario autenticado.| Protegido |
 
-2. Configurar las variables
-Crea un archivo llamado .env en la carpeta principal copiando el contenido de .env.example. Debes colocar tus propios datos:
-```text
-PORT=3000
-JWT_SECRET=escribe_aqui_una_contrasena_secreta
-MONGO_URI=mongodb+srv://<usuario>:<password>@cluster...
-CLIENT_URL=http://127.0.0.1:5500
-```
+## Cómo probar el proyecto localmente
 
-3. Instalar las herramientas necesarias
-```text
-npm install
-```
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/AlanContrera/backend-auth-jwt.git
+   cd backend-auth-jwt
+   ```
 
-4. Iniciar el servidor
-```text
-npm run dev
-```
-El servidor empezará a funcionar en la dirección http://localhost:3000.
+2. **Configurar las variables de entorno**
+   Crea un archivo llamado `.env` en la raíz del proyecto basándote en el archivo `.env.example`:
+   ```env
+   PORT=3000
+   JWT_SECRET=tu_secreto_super_seguro
+   MONGO_URI=mongodb+srv://<usuario>:<password>@cluster...
+   CLIENT_URL=http://127.0.0.1:5500
+   ```
 
-5. Iniciar la interfaz
-Para probar la parte visual, abre el archivo index.html (dentro de la carpeta frontend) en tu navegador de internet. 
-Si lo haces de esta manera, recuerda cambiar la variable API dentro de los archivos app.js y profile.html para que apunten a http://localhost:3000 en lugar del enlace publicado.
+3. **Instalar dependencias**
+   ```bash
+   npm install
+   ```
 
-## Cosas que quiero aprender y mejorar después
+4. **Iniciar el servidor en modo desarrollo**
+   ```bash
+   npm run dev
+   ```
+   El servidor estará escuchando en `http://localhost:3000`.
 
-Como voy empezando, sé que hay muchas cosas por mejorar. Mis siguientes pasos para este proyecto son:
-- Aprender a revisar rigurosamente la información que envía el usuario para evitar errores en el servidor.
-- Escribir pruebas automáticas para comprobar que mi código siempre funciona bien.
-- Aprender a estructurar mejor el código a medida que el proyecto vaya creciendo.
+5. **Probar el Frontend**
+   Abre el archivo `index.html` (dentro de la carpeta `frontend`) en tu navegador.
+   *Asegúrate de cambiar la constante `API` en los archivos de JavaScript del frontend para que apunten a `http://localhost:3000` si deseas probar con tu servidor local.*
+
+## Lo que aprendí / Mejoras Recientes
+
+Durante la evolución de este proyecto aprendí a:
+- Estructurar el código separando rutas, controladores y middlewares, haciendo el proyecto mucho más ordenado y fácil de mantener.
+- Validar correctamente la información que entra al servidor usando `express-validator`.
+- Centralizar el manejo de errores para evitar que el servidor se caiga y dar respuestas consistentes al frontend.
 
 ## Autor
 
