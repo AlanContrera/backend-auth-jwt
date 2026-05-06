@@ -7,6 +7,7 @@ require('./config/db');
 
 // rutas
 const authRoutes = require('./routes/auth.routes');
+const errorHandler = require('./middlewares/error.middleware');
 
 const app = express();
 
@@ -57,6 +58,9 @@ app.use('/', authRoutes);
 app.get('/', (req, res) => {
   res.send('API funcionando ');
 });
+
+// Middleware para manejo de errores (siempre debe ir después de las rutas)
+app.use(errorHandler);
 
 // servidor
 const PORT = process.env.PORT || 3000;
