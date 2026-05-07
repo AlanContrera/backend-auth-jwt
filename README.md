@@ -6,7 +6,7 @@ Recientemente he refactorizado el proyecto para mejorar su estructura y aplicar 
 
 ## Enlaces del proyecto publicado
 
-- **Interfaz de usuario:** [Frontend en Vercel](https://backend-auth-2wqrmpkht-giovannicontre24-1013s-projects.vercel.app)
+- **Interfaz de usuario:** [Frontend en Vercel](https://backend-auth-jwt.vercel.app)
 - **API (Servidor):** [Backend en Render](https://backend-auth-jwt-lato.onrender.com)
 
 > **Nota:** El servidor está alojado en un plan gratuito, por lo que la primera petición puede tardar unos segundos en responder mientras el servidor "despierta".
